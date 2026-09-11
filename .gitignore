@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.DS_Store
+deployments.html
+
+.shear.json
+
+*.shear.json
+*.shear.html
+*-shear.html
+node_modules/

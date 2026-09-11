@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Set up Shear'
+  short_description: 'Configure and open your private deployment picker'
+  default_prompt: 'Use $setup-shear to configure Shear for this machine and open the picker.'
