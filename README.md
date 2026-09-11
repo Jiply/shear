@@ -1,6 +1,17 @@
 # Shear
 
+![Layered pastel paper with precisely trimmed edges and detached offcuts](assets/shear-cover.png)
+
 A private Vercel deployment picker for Codex. Browse 25 deployments per page, filter and select entries, then send exact deletion selections back to your task. Runs locally without hosting.
+
+## Browse and select
+
+| Browse deployments                                                                                | Filter and preview a selection                                                                                                   |
+| ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| ![Shear showing deployment statuses, environments, and pagination](assets/browse-deployments.png) | ![Shear filtering preview deployments, selecting two entries, and previewing the deletion prompt](assets/select-deployments.png) |
+| Switch projects, inspect deployment states, and browse 25 entries per page.                       | Search and filter, select exact deployments, and review the prompt before sending it to Codex.                                   |
+
+Screenshots show the actual interface with fictional deployment data. The cover is AI-generated artwork. Image assets use Git LFS; run `git lfs pull` if they are missing from your checkout.
 
 ## Requirements
 
