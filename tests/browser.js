@@ -82,6 +82,52 @@ frame.onload = async function () {
       );
       key(input, 'Escape');
     }
+    frame.onload = null;
+    frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    const original = JSON.parse(fixture.match(/const data = (.*);/)[1]);
+    let variants = 0;
+    for (const width of [320, 390, 736, 1024, 1440]) {
+      for (const count of [0, 1, 25, 26, 60]) {
+        for (const bridge of [false, true]) {
+          for (const detached of [false, true]) {
+            for (const theme of ['light', 'dark']) {
+              const data = structuredClone(original);
+              data.projects[0].deployments = data.projects[0].deployments.slice(0, count);
+              let html = fixture.replace(
+                /const data = .*;/,
+                () => `const data = ${JSON.stringify(data).replaceAll('<', '\\u003c')};`
+              );
+              if (!bridge) html = html.replace(/<script>window.sent=[\s\S]*?<\/script>/, '');
+              if (detached) {
+                const scripts = [];
+                html =
+                  html.replace(/<script>[\s\S]*?<\/script>/g, script => {
+                    scripts.push(script);
+                    return '';
+                  }) + scripts.join('');
+              }
+              frame.style.width = width + 'px';
+              await new Promise((resolve, reject) => {
+                const timer = setTimeout(() => reject(new Error('Fresh render timed out')), 3000);
+                frame.onload = () => {
+                  clearTimeout(timer);
+                  resolve();
+                };
+                frame.srcdoc = `<style>:root {color-scheme:${theme}}</style>` + html;
+              });
+              const d = frame.contentDocument;
+              const label = `${width}px, ${count} deployments, bridge=${bridge}, detached=${detached}, ${theme}`;
+              assert(d.querySelectorAll('#rows tr').length === Math.min(count, 25), `First render: ${label}`);
+              d.querySelector('#select').click();
+              assert(d.querySelector('#selected').textContent === `${Math.min(count, 25)} selected`, `Selection: ${label}`);
+              assert(!d.querySelector('#rows img'), `Escaping: ${label}`);
+              variants++;
+            }
+          }
+        }
+      }
+    }
+    assert(variants === 200, '200 independent first-render variants passed');
     results.textContent = 'PASS\n' + checks.join('\n');
     document.title = 'PASS — Shear browser tests';
   } catch (error) {

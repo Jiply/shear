@@ -29,7 +29,7 @@ def private_write(path, text):
 
 def private_path(value, suffix):
     """Require dedicated private filenames and ignore protection inside Git."""
-    path = Path(value).expanduser().absolute()
+    path = Path(os.path.abspath(Path(value).expanduser()))
     if path.is_symlink():
         raise ValueError("Private files must not be symlinks")
     resolved = path.resolve()

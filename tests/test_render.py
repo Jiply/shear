@@ -92,6 +92,15 @@ class RendererTests(unittest.TestCase):
         (target / ".gitignore").write_text("*-shear.html\n")
         self.assertEqual(shear.private_path(output, "-shear.html"), output)
 
+    def test_normalize_output_without_resolving_task_alias(self):
+        target = self.root / "storage"
+        target.mkdir()
+        alias = self.root / "task"
+        alias.symlink_to(target, target_is_directory=True)
+        output = alias / "unused" / ".." / "deployments-shear.html"
+        expected = alias / "deployments-shear.html"
+        self.assertEqual(shear.private_path(output, "-shear.html"), expected)
+
     def test_git_requires_ignored_untracked_path(self):
         subprocess.run(["git", "init", str(self.root)], check=True, capture_output=True)
         path = self.root / "custom-shear.html"

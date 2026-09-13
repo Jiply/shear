@@ -65,7 +65,7 @@ Generate a self-running browser test page using synthetic data:
 python3 tests/browser_fixture.py
 ```
 
-Open the printed file in Chrome. It displays PASS or FAIL and each check. Tests exercise selection, pagination, project-specific refresh, text escaping, keyboard navigation, empty states, focus restoration, tooltip exclusion, and layout at 320–1440px. The page never contacts Vercel or sends prompts to Codex.
+Open the printed file in Chrome. It displays PASS or FAIL and each check. Tests exercise selection, pagination, project-specific refresh, text escaping, keyboard navigation, empty states, focus restoration, tooltip exclusion, and layout at 320–1440px. It also checks 200 fresh iframe renders across viewport sizes, deployment counts, host bridge availability, script placement, and themes. The page never contacts Vercel or sends prompts to Codex.
 
 ## Deletion boundary
 
