@@ -1,8 +1,6 @@
-<!doctype html>
-<html lang="en">
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>Shear</title>
+<div id="shear-picker" lang="en">
   <style>
-    :root {
+    #shear-picker {
       color-scheme: dark;
       font:
         14px -apple-system,
@@ -12,14 +10,14 @@
       background: #000;
       color: #f5f5f7;
     }
-    html {
+    #shear-picker {
       border-radius: 16px;
       overflow: hidden;
     }
     * {
       box-sizing: border-box;
     }
-    body {
+    #shear-picker {
       margin: 0;
       background: #000;
     }
@@ -245,7 +243,7 @@
         gap: 10px;
       }
     }
-    html.embedded main {
+    #shear-picker.embedded main {
       max-width: none;
     }
 
@@ -458,9 +456,10 @@
     <p id="notice" role="status"></p>
   </main>
   <script>
-    if (window.self !== window.top || window.openai) document.documentElement.classList.add('embedded');
+    const root = document.getElementById('shear-picker');
+    if (window.self !== window.top || window.openai) root.classList.add('embedded');
     const data = /* PICKER_DATA */ null;
-    const el = Object.fromEntries([...document.querySelectorAll('[id]')].map(node => [node.id, node]));
+    const el = Object.fromEntries([...root.querySelectorAll('[id]')].map(node => [node.id, node]));
     const selected = new Set();
     let submitted = false;
     let page = 0;
@@ -846,7 +845,7 @@
       tooltip.className = 'status-tooltip';
       tooltip.setAttribute('role', 'tooltip');
       tooltip.setAttribute('popover', 'manual');
-      document.body.append(tooltip);
+      root.append(tooltip);
       let owner = null;
       let hideTimer;
       function hide() {
@@ -915,4 +914,4 @@
     createPicker(el.target);
     render();
   </script>
-</html>
+</div>

@@ -49,7 +49,7 @@ Config filenames end in `.shear.json`; snapshot filenames end in `-shear.html`. 
 
 Writes use a temporary file with private permissions and atomic replacement. POSIX permissions are `0600`; platform filesystem protections still apply. Fetch or replacement failure preserves the previous snapshot. Config stores only paths and scope, never authentication credentials. Generated HTML includes local setup paths and deployment metadata, so keep it private. Credentials remain managed by the CLI.
 
-The UI fills its embedded container and is centered at 42rem when opened independently. Display a rendered snapshot in Codex using `::codex-inline-vis{path="<absolute-output-path>"}`.
+The UI fills its embedded container and is centered at 42rem when opened independently. Display a rendered snapshot in Codex using `visualize{"path":"<absolute-output-path>"}`.
 
 ## Verification
 

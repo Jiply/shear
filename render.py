@@ -32,7 +32,7 @@ def private_path(value, suffix):
     path = Path(value).expanduser().absolute()
     if path.is_symlink():
         raise ValueError("Private files must not be symlinks")
-    path = path.resolve()
+    resolved = path.resolve()
     if not path.name.endswith(suffix):
         raise ValueError(f"Private filename must end with {suffix}")
     if suffix == "-shear.html" and not re.fullmatch(
@@ -42,7 +42,7 @@ def private_path(value, suffix):
             "Snapshot filename must use lowercase letters, digits, and single hyphens; "
             "choose a name such as deployments-shear.html"
         )
-    parent = path.parent
+    parent = resolved.parent
     while not parent.exists():
         parent = parent.parent
     if shutil.which("git"):
@@ -54,11 +54,11 @@ def private_path(value, suffix):
         if result.returncode == 0:
             root = result.stdout.strip()
             tracked = subprocess.run(
-                ["git", "-C", root, "ls-files", "--error-unmatch", str(path)],
+                ["git", "-C", root, "ls-files", "--error-unmatch", str(resolved)],
                 capture_output=True,
             )
             ignored = subprocess.run(
-                ["git", "-C", root, "check-ignore", "-q", str(path)],
+                ["git", "-C", root, "check-ignore", "-q", str(resolved)],
                 capture_output=True,
             )
             if tracked.returncode == 0 or ignored.returncode != 0:

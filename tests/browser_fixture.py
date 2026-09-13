@@ -45,7 +45,7 @@ html = (
     .replace("/* PICKER_DATA */ null", json.dumps(data).replace("<", "\\u003c"))
 )
 bridge = "<script>window.sent=[];window.openai={sendFollowUpMessage:async ({prompt})=>window.sent.push(prompt)};</script>"
-html = html.replace('<html lang="en">', '<html lang="en">' + bridge)
+html = bridge + html
 script = (root / "tests/browser.js").read_text()
 output.parent.mkdir(parents=True, exist_ok=True)
 output.write_text(

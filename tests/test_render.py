@@ -77,13 +77,28 @@ class RendererTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             shear.private_path(link, "-shear.html")
 
+    def test_preserve_symlinked_parent_for_inline_output(self):
+        target = self.root / "storage"
+        target.mkdir()
+        alias = self.root / "task"
+        alias.symlink_to(target, target_is_directory=True)
+        output = alias / "deployments-shear.html"
+        self.assertEqual(shear.private_path(output, "-shear.html"), output)
+        shear.private_write(output, "private")
+        self.assertEqual(output.read_text(), "private")
+        subprocess.run(["git", "init", str(target)], check=True, capture_output=True)
+        with self.assertRaises(ValueError):
+            shear.private_path(output, "-shear.html")
+        (target / ".gitignore").write_text("*-shear.html\n")
+        self.assertEqual(shear.private_path(output, "-shear.html"), output)
+
     def test_git_requires_ignored_untracked_path(self):
         subprocess.run(["git", "init", str(self.root)], check=True, capture_output=True)
         path = self.root / "custom-shear.html"
         with self.assertRaises(ValueError):
             shear.private_path(path, "-shear.html")
         (self.root / ".gitignore").write_text("*-shear.html\n")
-        self.assertEqual(shear.private_path(path, "-shear.html"), path.resolve())
+        self.assertEqual(shear.private_path(path, "-shear.html"), path.absolute())
         path.write_text("private")
         subprocess.run(
             ["git", "-C", str(self.root), "add", "-f", str(path)], check=True
@@ -173,6 +188,8 @@ class RendererTests(unittest.TestCase):
         with patch.object(shear, "pages", side_effect=pages):
             self.run_main(*args)
         before = output.read_text()
+        self.assertNotIn("<!doctype", before.lower())
+        self.assertNotIn("<html", before.lower())
         self.assertIn('"project": "demo"', before)
         self.assertNotIn("</script><script>alert", before)
         with patch.object(shear, "pages", side_effect=ValueError("network failed")):
